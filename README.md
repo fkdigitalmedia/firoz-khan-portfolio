@@ -53,20 +53,10 @@ npm run dev        # http://localhost:3000
 npm run build      # standard Next.js production build
 ```
 
-## Cloudflare preview / deploy (adapter path)
+## Deploy on Cloudflare Pages (production)
 
-These use the official `@opennextjs/cloudflare` adapter documented at
-https://opennext.js.org/cloudflare/get-started:
-
-```bash
-npm run preview    # opennextjs-cloudflare build && preview locally (workerd)
-npm run deploy     # opennextjs-cloudflare build && deploy via wrangler
-npm run upload     # build && upload a new worker version without deploying
-```
-
-`npm run build` and the `opennextjs-cloudflare build` path both pass cleanly.
-
-## Deploy on Cloudflare (production)
+The site is 100% static (`output: "export"` in `next.config.ts`) and deploys
+to **Cloudflare Pages**. Live at https://firoz-khan-portfolio.pages.dev.
 
 ### Option A — Git integration (recommended)
 
@@ -74,26 +64,26 @@ npm run upload     # build && upload a new worker version without deploying
    https://github.com/fkdigitalmedia/firoz-khan-portfolio).
 2. Cloudflare dashboard → **Workers & Pages** → **Create** → **Connect to Git** →
    select `fkdigitalmedia/firoz-khan-portfolio`.
-3. Build settings:
-   - **Build command:** `npx @opennextjs/cloudflare build`
-     (this runs `npm run build` internally, then adapts the output for Workers)
-   - **Deploy command:** `npx wrangler deploy`
+3. Build settings (Framework preset: **Next.js (Static HTML Export)** or None):
+   - **Build command:** `npm run build`
+   - **Build output directory:** `out`
    - **Root directory:** `/`
-   - **Node.js version:** 20+ (set `NODE_VERSION=20` if prompted)
-4. **Deploy.** Cloudflare builds and deploys on every push to `main`.
-   (`wrangler.jsonc` in the repo already sets `nodejs_compat` and the
-   `.open-next` worker/assets paths — no extra dashboard config needed.)
+   - **Node.js version:** 20+
+4. **Deploy.** Cloudflare rebuilds and deploys on every push to `main`.
 
 ### Option B — Direct deploy with wrangler
 
-Needs a Cloudflare API token (`wrangler login` or `CLOUDFLARE_API_TOKEN`):
+Needs a Cloudflare API token with **Pages:Edit**
+(`wrangler login` or `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID`):
 
 ```bash
-npm run deploy
+npm run build
+npx wrangler pages deploy out --project-name=firoz-khan-portfolio --branch=main
 ```
 
-This builds with the adapter and deploys the Worker defined in `wrangler.jsonc`
-(`name: firoz-khan-portfolio`).
+(The repo also ships `wrangler.jsonc` + `@opennextjs/cloudflare` config from an
+earlier Workers-based setup; the live deployment uses the static Pages path
+above. `npm run preview` runs the old adapter preview and is not used.)
 
 ## Notes
 
