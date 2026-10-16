@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Header from "../components/Header";
+import WhatsAppWidget from "../components/WhatsAppWidget";
 
 const inter = Inter({ subsets: ["latin"], display: "swap" });
 
@@ -16,6 +17,9 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   alternates: { canonical: SITE_URL },
   robots: { index: true, follow: true },
+  verification: {
+    google: "VlRbNVxM7oKNouiPsrkJ_GKzqivt92ZTsnVYiYdsKS4",
+  },
   openGraph: {
     type: "website",
     url: SITE_URL,
@@ -71,6 +75,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
         <Header />
         <main>{children}</main>
+        <WhatsAppWidget />
       </body>
     </html>
   );
